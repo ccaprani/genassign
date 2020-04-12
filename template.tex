@@ -1,0 +1,576 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{stanli}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,arrows,positioning}
+\usepackage{ifthen}
+\usepackage{adjustbox}
+\usepackage[gobble=auto]{pythontex}
+\usepackage[nameinlink]{cleveref}
+
+% Differential
+\newcommand*{\D}{\mathrm{d}}
+% scientific notation
+\providecommand{\e}[1]{\ensuremath{\times~10^{#1}}} 
+
+\begin{pycode}
+	import math
+	def n(num, sig=3):
+		f = '%.' + str(sig) + 'g' 
+		ret = f % num
+		if 'e' in ret:
+			ret = ret.replace('e', r'\e{')
+			ret += '}'
+		return ret
+	
+	def to_eng(num, sig=3):
+		try:
+			x = int(math.log10(num)//3)*3
+		except (ValueError, KeyError):
+			x = 0
+		if x != 0:
+			ret = str(n(num/10**x,sig)) + r' \times 10^{' + str(x) + '}'
+		else:
+			ret = str(n(num,sig))
+		return ret
+\end{pycode}
+
+% Commands for jinja2 templating
+% Instead of empty braces (i.e. no command effect), here we make the variable uppercase red
+% to emphasize in the template those variables to be replaced. Once rendered, this formatting
+% has not effect as jinja replaces the \VAR{variable} entirely.
+\usepackage{xcolor}
+\newcommand*{\VAR}[1]{\textcolor{red}{\MakeUppercase{\textbf{#1}}}}
+\newcommand*{\BLOCK}[1]{\textcolor{red}{\MakeUppercase{\textbf{#1}}}}
+
+\usepackage{comment}
+\newif\ifhidden
+% This defines whether to show the hidden content or not.
+\hiddenfalse 
+\ifhidden 	% if \ hiddentrue
+	\excludecomment{hidden}	% Exclude text within the "hidden" environment
+\else   	% \ hiddenfalse
+	\includecomment{hidden}		% Include text in the "hidden" environment
+\fi
+
+\title{CIV4280 Bridge Design \& Assessment\\Test for \VAR{FULL-NAME} (\VAR{STUDENT-ID})}
+\date{Semester 1, 2020}
+\author{Dr Colin Caprani\\Dr Mayer Melhem}
+
+\begin{document}
+\maketitle
+%\thispagestyle{fancy}
+
+\begin{abstract}
+	This Test explores the topic of direct stiffness method. Familiarity with identifying unknown degrees of freedom, following the step-by-step procedure, and drawing bending moment and torsion moment diagram are necessary. This topic contributes to unit Learning Outcome 3: \textit{Determine the structural behaviour of various bridge types quantitatively and qualitatively using relevant hand- and computer-based methods}. By being competent at analysing simple structures by hand using the stiffness method, you will be better placed to correctly use and understand the output of computer analyses of more complex models.
+\end{abstract}
+
+%{\sf\tighttoc}
+\newpage
+
+\section{Tutorial Problem}
+
+\begin{pycode}
+from ps2 import *
+import random
+
+L_list = [3.5,3.75,4.0,4.25,4.5,4.75,5.0]  # m
+M_list = [-80, -30, -50]	# kNm
+I = 37.5e-6 	# m4
+J = 75e-6   	# m4
+E = 200     	# GPa
+G = 80      	# GPa
+
+# Unit conversions MNm2
+E *= 1e3
+G *= 1e3
+
+L = random.choice(L_list) 		# Member length
+M = random.choice(M_list) 		# y-axis moment load @ C
+
+grid = [L,I,J,E,G,M]
+
+EI_L = E*I/L
+GJ_L = G*J/L
+
+# Call analysis
+D = solve_D(grid)
+theta_C, theta_D, theta_F = D
+Fcd = eleF(eleK(grid),d_CD(D)*1e3)
+Fce = eleF(eleK(grid),d_CE(D)*1e3)
+Fcf = eleF(eleK(grid),d_CF(D)*1e3)
+Fgc = eleF(eleK(grid),d_GC(D)*1e3)
+Fcg = eleF(eleK(grid),d_CG(D)*1e3)
+
+bmd_scale=8
+tmd_scale=5
+\end{pycode}
+
+The symmetric grillage shown in \Cref{fig:grid} has fixed ends at \emph{E} and \emph{G} and
+pinned ends at \emph{D} and \emph{F}. Material and geometric properties are the same for all members: 
+
+Using the direct stiffness method, show the rotation at $F$ is $\py{n(theta_F*1e3)}$~mrad when the applied $M = \py{n(-M)}$~kNm. 
+
+Draw the resulting bending and torsion moment diagrams for the applied load shown in \Cref{fig:grid}.
+
+\begin{itemize} %these should be appropritately randomized 
+	\item $L = \py{int(L*1e3)}$ mm
+	\item $I = \pys{!{to_eng(I*1e12)}}$ mm$^4$
+	\item $J = \pys{!{to_eng(J*1e12)}}$ mm$^4$
+	\item $E = \py{int(E/1e3)}$ GPa
+	\item $G = \py{int(G/1e3)}$ GPa
+\end{itemize}
+
+\begin{figure}[ht]
+	\centering
+
+	\begin{pysub}
+	\setcoords{-25}{30}[1][1] 
+	\setaxis{2} 
+	\begin{adjustbox}{max width=\textwidth}
+	\begin{tikzpicture}[coords] 
+	
+	\dpoint{c}{0}{0}{0}; 
+	\dpoint{d}{ -!{L} }{0}{0};
+	\dpoint{e}{0}{ !{L} }{0}; 
+	\dpoint{f}{ !{L} }{0}{0};
+	\dpoint{g}{0}{-!{L} }{0}; 
+	\dpoint{z}{ -!{L} }{ -!{0.9*L} }{0}; 
+	
+	\daxis{1}{z}; 
+	
+	\foreach \startn/\endn in {c/d,c/e,c/f,c/g}
+		\dbeam{1}{\startn}{\endn};
+	
+	\support{1}{d}; \hinge{1}{d}
+	\support{3}{e}[90];
+	\support{1}{f}; \hinge{1}{f}
+	\support{3}{g}[270];
+	
+	\begin{scope}[force/.append style={color=red,>={Latex[length=0pt 5]}},
+				  normalLine/.append style={line width=1mm}]
+		%Fiendishly clever hack to convert float to pt for testing, hence to integer
+		\ifthenelse{\lengthtest{ !{abs(M)} pt > 0pt}}
+		{
+			\dload{4}{c}[90][-90][ !{L/3} ];
+			\dnotation{1}{c}{$!{n(-M)}$~kNm}[left=5mm];
+		}{}
+	\end{scope}
+	
+	\foreach \startn/\endn in {c/d,c/f}
+		\ddimensioning{xy}{\startn}{\endn}{-!{1.3*L}}[$!{L}$~m];
+	\foreach \startn/\endn in {c/e,c/g}
+		\ddimensioning{yx}{\startn}{\endn}{!{1.4*L}}[$!{L}$~m];
+	
+	\dnotation{1}{c}{$C$}[below=2mm];
+	\dnotation{1}{d}{$D$}[above right];
+	\dnotation{1}{e}{$E$}[above left];
+	\dnotation{1}{f}{$F$}[above right];
+	\dnotation{1}{g}{$G$}[below right];
+	
+	\end{tikzpicture}
+	\end{adjustbox}
+	\end{pysub}
+	\caption{Grid Problem.}
+	\label{fig:grid}
+\end{figure}
+
+
+\begin{hidden}	
+\clearpage
+\section{Tutorial Solution}
+
+\textbf{Step 1:} Define coordinate system. This is already provided in \Cref{fig:grid}. 
+
+\textbf{Step 2:} The unknown degrees of freedom are: 
+
+\begin{itemize}
+	\item Rotation about global y-axis at C ($\theta_C$)
+	\item Rotation about global y-axis at D ($\theta_D$)
+	\item Rotation about global y-axis at F ($\theta_F$)
+\end{itemize} 
+
+Due to symmetry of members CD and CF, and no applied point load, the degree of freedom for translation C is known: $\delta_C = 0$. Hence; 
+
+\begin{equation}
+	DOF = \left\{\theta_C,\theta_D,\theta_F\right\}
+\end{equation}
+
+\textbf{Step 3:} The known forces corresponding to the unknown DOF are: 
+
+\begin{equation}
+	F = \left\{ \py{n(M)},0,0 \right\} \textrm{\hspace{0.5cm} [kNm]}
+\end{equation}
+
+Note, the negative sign as per the direction of the double-headed arrow. 
+	
+\textbf{Step 4:} Apply $\theta_C$ positively only. 
+
+This causes bending along member DCF, and twisting along member ECG. 
+
+\textbf{Step 5:} Get forces at each DOF. 
+
+Moment in the direction of $\theta_C$ caused by $\theta_C$: 
+
+\begin{itemize}
+	\item In Element DC: $M_C = \left(\frac{4EI}{L}\right)\theta_C$
+	\item In Element CF: $M_C = \left(\frac{4EI}{L}\right)\theta_C$
+	\item In Element EC: $M_C = \left(\frac{GJ}{L}\right)\theta_C$
+	\item In Element CG: $M_C = \left(\frac{GJ}{L}\right)\theta_C$
+\end{itemize}	
+
+As all member properties are equal, then: 
+
+\begin{equation}
+	M_C = \frac{8EI+2GJ}{L}\theta_C
+\end{equation}
+
+Moment in the direction of $\theta_D$ caused by $\theta_C$: 
+
+\begin{itemize}
+	\item In Element DC: $M_D = \left(\frac{2EI}{L}\right)\theta_C$
+\end{itemize}	
+
+Moment in the direction of $\theta_F$ caused by $\theta_C$: 
+
+\begin{itemize}
+	\item In Element CF: $M_F = \left(\frac{2EI}{L}\right)\theta_C$
+\end{itemize}	
+
+\textbf{Step 6:} Repeat for each DOF
+
+Apply $\theta_D$ positively only and get forces at each DOF. 
+
+Moment in the direction of $\theta_C$ caused by $\theta_D$: 
+
+\begin{itemize}
+	\item In Element DC: $M_C = \left(\frac{2EI}{L}\right)\theta_D$
+\end{itemize}	
+
+Moment in the direction of $\theta_D$ caused by $\theta_D$: 
+
+\begin{itemize}
+	\item In Element DC: $M_D = \left(\frac{4EI}{L}\right)\theta_D$
+\end{itemize}	
+
+Moment in the direction of $\theta_F$ caused by $\theta_D$ is equal to zero ($M_F = 0$) as there is no rotation (C is locked).
+
+Apply $\theta_F$ positively only and get forces at each DOF. 
+
+Moment in the direction of $\theta_C$ caused by $\theta_F$: 
+
+\begin{itemize}
+	\item In Element DC: $M_C = \left(\frac{2EI}{L}\right)\theta_F$
+\end{itemize}	
+
+Moment in the direction of $\theta_D$ caused by $\theta_F$ is equal to zero ($M_D = 0$) as there is no rotation (C is locked).		
+
+Moment in the direction of $\theta_F$ caused by $\theta_F$: 
+
+\begin{itemize}
+	\item In Element DC: $M_F = \left(\frac{4EI}{L}\right)\theta_F$
+\end{itemize}			
+		
+\textbf{Step 7:} Add nodal forces
+
+Total moment in the direction of $\theta_C$: 
+
+\begin{equation}
+	M_C = \frac{8EI+2GJ}{L}\theta_C +  \left(\frac{2EI}{L}\right)\theta_D + \left(\frac{2EI}{L}\right)\theta_F  
+\end{equation}
+
+Total moment in the direction of $\theta_D$: 
+
+\begin{equation}
+	M_D = \left(\frac{2EI}{L}\right)\theta_C + \left(\frac{4EI}{L}\right)\theta_D + 0  
+\end{equation}
+
+Total moment in the direction of $\theta_F$:
+
+\begin{equation}
+	M_F = \left(\frac{2EI}{L}\right)\theta_C + 0 \left(\frac{4EI}{L}\right)\theta_F  
+\end{equation}
+
+Given: 
+
+\begin{equation}
+\frac{EI}{L} = \frac{ \left( \py{to_eng(E)} \right)\left(\py{to_eng(I)}\right) }
+					{ \left(\py{to_eng(L)}\right) } \times 10^{-3}
+				=\py{to_eng(EI_L*1e3)}~\mathrm{kNm}
+\end{equation}
+
+
+\begin{equation}
+\frac{GJ}{L} = \frac{ \left( \py{to_eng(G)} \right)\left(\py{to_eng(J)}\right) }
+					{ \left(\py{to_eng(L)}\right) } \times 10^{-3}
+				=\py{to_eng(GJ_L*1e3)}~\mathrm{kNm}
+\end{equation}
+
+The resulting structural stiffness matrix becomes: 
+
+\begin{equation}
+	K = 10^3 \py{m2ltx(sysK(grid))}
+\end{equation}
+
+Notice, it is symmetrical, giving confidence we have done it correctly.  
+
+\textbf{Step 8:} Solve, using Rule of Sarrus and Cramer's Rule to find:
+	
+\begin{align*}
+	\begin{Bmatrix}
+		\theta_C \\ \theta_D \\ \theta_F
+	\end{Bmatrix} 
+	&= 10^{-3} 
+	{\py{m2ltx(sysK(grid))}}^{-1}
+	\py{m2ltx(getF(grid),style='Bmatrix')} \\
+	&= \frac{10^{-3}}{\py{to_eng(det_K(sysK(grid)))}} \py{m2ltx(inv_K(sysK(grid))*det_K(sysK(grid)))}
+	\py{m2ltx(getF(grid),style='Bmatrix')} \\
+\end{align*}
+from which:
+\begin{equation}
+	\begin{Bmatrix}
+		\theta_C \\ \theta_D \\ \theta_F
+	\end{Bmatrix} 
+	= \py{m2ltx(D*1e3,style='Bmatrix')}	~\mathrm{[mrad]}
+\end{equation}
+
+\textbf{Step 9:} Member forces:
+
+Using the special matrix since there is no vertical force and no
+vertical displacement for this special case.
+
+For Member \emph{CD}:
+\begin{equation*}
+	\begin{Bmatrix}
+	T_C \\ M_C \\ T_D \\ M_D
+	\end{Bmatrix} 
+	= 10^{3} 
+	\py{m2ltx(eleK(grid))}
+	\py{m2ltx(d_CD(D*1e3),style='Bmatrix')}
+	= 
+	\py{m2ltx(Fcd,style='Bmatrix')}
+	~\mathrm{[kNm]}
+\end{equation*}
+
+For Member \emph{CF} we consider not using the lower number node as the $i$ node to illustrate the coordinate transform that must be considered. In this case, since the local $z$-axis and gloabl $Y$-axis are parallel, positive $\theta$ become positive major axis bending in the member's local coordinate system:
+
+\begin{equation*}
+	\begin{Bmatrix}
+		T_C \\ M_C \\ T_F \\ M_F
+	\end{Bmatrix} 
+	= 10^{3} 
+	\py{m2ltx(eleK(grid))}
+	\py{m2ltx(d_FC(D*1e3),style='Bmatrix')}
+	= 
+	\py{m2ltx(Fcf,style='Bmatrix')}
+	~\mathrm{[kNm]}
+\end{equation*}
+
+
+For Member \emph{CE}:
+\begin{equation*}
+	\begin{Bmatrix}
+		T_C \\ M_C \\ T_E \\ M_E
+	\end{Bmatrix} 
+	= 10^{3} 
+	\py{m2ltx(eleK(grid))}
+	\py{m2ltx(d_CE(D*1e3),style='Bmatrix')}
+	= 
+	\py{m2ltx(Fce,style='Bmatrix')}
+	~\mathrm{[kNm]}
+\end{equation*}
+
+And finally, for Member \emph{CG}, we again break convention and carefully consider the directions of the global displacements as they relate to the local member coordinate system.
+
+\begin{equation*}
+	\begin{Bmatrix}
+		T_G \\ M_G \\ T_C \\ M_C
+	\end{Bmatrix} 
+	= 10^{3} 
+	\py{m2ltx(eleK(grid))}
+	\py{m2ltx(d_GC(D*1e3),style='Bmatrix')}
+	= 
+	\py{m2ltx(Fgc,style='Bmatrix')}
+	~\mathrm{[kNm]}
+\end{equation*}
+
+\textbf{Step 10} is to draw the internal actions diagrams. To do this, the results of the member actions which were derived in the local member coordinate system must now be considered now in the global coordinate system. The easiest way to do this is to draw the directions by carefully interpreting the member force signs against the global axis system. The resulting FBD is shown in \Cref{fig:fbd}.
+
+\begin{figure}[!htb]
+	\centering
+	
+	\begin{pysub}
+		\setcoords{-25}{30}[1][1] 
+		\setaxis{2} 
+		\begin{adjustbox}{max width=\textwidth}
+			\begin{tikzpicture}[coords] 
+			\dscaling{1}{1.5};
+			
+			\dpoint{c}{0}{0}{0}; 
+			\dpoint{d}{ -!{L} }{0}{0};
+			\dpoint{e}{0}{ !{L} }{0}; 
+			\dpoint{f}{ !{L} }{0}{0};
+			\dpoint{g}{0}{-!{L} }{0}; 
+			\dpoint{z}{ -!{0.7*L} }{ -!{0.7*L} }{0}; 
+			
+			\daxis{1}{z}; 
+			
+			\dbeam{1}{c}{d};
+			\dbeam{1}{c}{e};
+			\dbeam{1}{c}{f};
+			\dbeam{1}{c}{g};
+			
+			\support{1}{d}; \hinge{1}{d}
+			\support{3}{e}[90];
+			\support{1}{f}; \hinge{1}{f}
+			\support{3}{g}[270];
+
+			\begin{scope}[force/.append style={color=red,>={Latex[length=0pt 5]}},
+			normalLine/.append style={line width=1mm}]
+				
+				\dload{4}{c}[90][-90][ !{L/3} ];
+				\dnotation{1}{c}{$!{n(abs(Fcg[0]))}$}[left=5mm];
+
+				\dload{3}{c}[270][-90][ !{L/3} ];
+				\dnotation{1}{c}{$!{n(abs(Fce[0]))}$}[right=5mm];				
+				
+				\dpoint{cd}{-!{L/6}}{0}{0}
+				\dload{4}{cd}[90][-90][ !{L/3} ];
+				\dnotation{1}{cd}{$!{n(abs(Fcd[1]))}$}[left=5mm];
+
+				\dpoint{cf}{!{L/6}}{0}{0}
+				\dload{4}{cf}[90][-90][ !{L/3} ];
+				\dnotation{1}{cf}{$!{n(abs(Fcf[1]))}$}[below=5mm];
+				
+				\dload{4}{g}[270][-90][ !{L/3} ];
+				\dnotation{1}{g}{$!{n(abs(Fcg[2]))}$}[right=5mm];
+
+				\dload{3}{e}[90][-90][ !{L/3} ];
+				\dnotation{1}{e}{$!{n(abs(Fce[2]))}$}[left=5mm];	
+				
+			\end{scope}
+			
+			\dnotation{1}{c}{$C$}[above=2mm];
+			\dnotation{1}{d}{$D$}[above right];
+			\dnotation{1}{e}{$E$}[above left];
+			\dnotation{1}{f}{$F$}[above right];
+			\dnotation{1}{g}{$G$}[below right];
+			
+			\end{tikzpicture}
+		\end{adjustbox}
+	\end{pysub}
+	\caption{Free body diagram.}
+	\label{fig:fbd}
+\end{figure}
+
+Considering the BMD, for each member, to identify the side in tension it can help to visualise the deformation resulting from the forces acting on it indicated in the free body diagram, \Cref{fig:fbd}. Since there are no loads acting between the nodes, the BMD is comprised of straight lines between the values at each node. The BMD is shown in \Cref{fig:bmd}.
+
+\begin{figure}[ht]
+	\centering
+	
+	\begin{pysub}
+		\setcoords{-25}{30}[1][1][1] 
+		\setaxis{2} 
+		\begin{adjustbox}{max width=\textwidth}
+			\begin{tikzpicture}[coords] 
+			\dscaling{1}{1.5};
+			
+			\dpoint{c}{0}{0}{0}; 
+			\dpoint{d}{ -!{L} }{0}{0};
+			\dpoint{e}{0}{ !{L} }{0}; 
+			\dpoint{f}{ !{L} }{0}{0};
+			\dpoint{g}{0}{-!{L} }{0}; 
+			\dpoint{z}{ -!{0.7*L} }{ -!{0.7*L} }{0}; 
+			
+			\daxis{1}{z}; 
+			
+			\dbeam{1}{c}{d};
+			\dbeam{1}{c}{e};
+			\dbeam{1}{c}{f};
+			\dbeam{1}{c}{g};
+			
+			\support{1}{d};  \hinge{1}{d}
+			\support{3}{e}[90];
+			\support{1}{f};  \hinge{1}{f}
+			\support{3}{g}[270];
+			
+			\dinternalforces{xz}{c}{d}{ !{int(Fcd[1]/bmd_scale)} }{ !{int(Fcd[3]/bmd_scale)} };
+			\dinternalforces{xz}{c}{e}{ !{int(Fce[1]/bmd_scale)} }{ !{int(Fce[3]/bmd_scale)} };
+			\dinternalforces{xz}{c}{f}{ !{int(Fcf[1]/bmd_scale)} }{ !{int(Fcf[3]/bmd_scale)} };
+			\dinternalforces{xz}{c}{g}{ !{int(Fcg[1]/bmd_scale)} }{ !{int(Fcg[3]/bmd_scale)} };
+			
+			\dnotation{1}{c}{$!{n(abs(Fcd[1]))}$}[below right=18mm and 0mm of c];
+			\dnotation{1}{c}{$!{n(abs(Fcf[1]))}$}[above left=18mm and 0mm of c];
+			
+			\dnotation{1}{c}{$C$}[right=3mm];
+			\dnotation{1}{d}{$D$}[above right];
+			\dnotation{1}{e}{$E$}[above left];
+			\dnotation{1}{f}{$F$}[above right];
+			\dnotation{1}{g}{$G$}[below right];
+			
+			\end{tikzpicture}
+		\end{adjustbox}
+	\end{pysub}
+	\caption{Bending Moment Diagram.}
+	\label{fig:bmd}
+\end{figure}
+
+For the TMD, it is not necessary to adopt a strict drawing convention once the relative actions are indicated. For example, the double-headed arrow in \Cref{fig:fbd} indicating the torsion of member $CE$ could be thought of as an analogous ``tension'' which we may consider as positive, and so we draw the TMD above the line. Similarly, fr member $CG$, the double-headed arrows act in the opposite sense to the analogous ``tension'' and so are analogous to ``compression'', which we then draw on the bottom of the member, as shown in \Cref{fig:tmd}.
+
+\begin{figure}[ht]
+	\centering
+	
+	\begin{pysub}
+		\setcoords{-25}{30}[1][1][1] 
+		\setaxis{2} 
+		\begin{adjustbox}{max width=\textwidth}
+			\begin{tikzpicture}[coords] 
+			\dscaling{1}{1.5};
+			
+			\dpoint{c}{0}{0}{0}; 
+			\dpoint{d}{ -!{L} }{0}{0};
+			\dpoint{e}{0}{ !{L} }{0}; 
+			\dpoint{f}{ !{L} }{0}{0};
+			\dpoint{g}{0}{-!{L} }{0}; 
+			\dpoint{z}{ -!{0.7*L} }{ -!{0.7*L} }{0}; 
+			
+			\daxis{1}{z}; 
+			
+			\dbeam{1}{c}{d};
+			\dbeam{1}{c}{e};
+			\dbeam{1}{c}{f};
+			\dbeam{1}{c}{g};
+			
+			\support{1}{d};  \hinge{1}{d}
+			\support{3}{e}[90];
+			\support{1}{f};  \hinge{1}{f}
+			\support{3}{g}[270];
+			
+			\dinternalforces{yz}{c}{d}{ !{int(Fcd[0]/tmd_scale)} }{ !{int(-Fcd[2]/tmd_scale)} };
+			\dinternalforces{yz}{c}{e}{ !{int(Fce[0]/tmd_scale)} }{ !{int(-Fce[2]/tmd_scale)} };
+			\dinternalforces{yz}{c}{f}{ !{int(Fcf[0]/tmd_scale)} }{ !{int(-Fcf[2]/tmd_scale)} };
+			\dinternalforces{yz}{c}{g}{ !{int(Fcg[0]/tmd_scale)} }{ !{int(-Fcg[2]/tmd_scale)} };
+			
+			\dnotation{1}{c}{$!{n(abs(Fce[0]))}$}[below=12mm];
+			\dnotation{1}{e}{$!{n(abs(Fce[2]))}$}[above=12mm];
+			\dnotation{1}{c}{$!{n(abs(Fcg[0]))}$}[above=12mm];
+			\dnotation{1}{g}{$!{n(abs(Fcg[2]))}$}[below=12mm];
+			
+			\dnotation{1}{c}{$C$}[right=3mm];
+			\dnotation{1}{d}{$D$}[above right];
+			\dnotation{1}{e}{$E$}[above left];
+			\dnotation{1}{f}{$F$}[above right];
+			\dnotation{1}{g}{$G$}[below right];
+			
+			\end{tikzpicture}
+		\end{adjustbox}
+	\end{pysub}
+	\caption{Torsion Moment Diagram.}
+	\label{fig:tmd}
+\end{figure}
+
+\end{hidden}
+\end{document}
