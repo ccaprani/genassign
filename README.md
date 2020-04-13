@@ -57,7 +57,7 @@ only one set of files is output to the `-r` root directory using:
 The masks are based on the columns numnber in the worksheet, and
 constructed using `#d` as field variables for the column number, where
 d is 1-9. An example is `'File_#2_#3'` in which the data in columns 2 and
-3 (using 1-base numbdering) is subsituted for the file or folder name.
+3 (using 1-base numbering) is subsituted for the file or folder name.
 
 An important restriction in this mode is that the column names, which are
 the keys to be used in the LaTeX template, do not contain spaces, hyphens
@@ -80,7 +80,7 @@ genassign.py [-h] [-t FILE_MASK] [-f FOLDER_MASK] [-b] [-g]
                 template worksheet
 ```
 
-optional arguments:
+### Optional Arguments:
 
 `-h`, `--help`
 show this help message and exit
@@ -110,7 +110,7 @@ Root directory name for main (solutions) output, e.g. `'solutions'`
 `-q`, `--questdir` QUESTDIR
 Directory name for questions output, e.g. `'questions'`
 
-required named arguments:
+### Required Named Arguments:
 
 `template`  LaTeX Template File with certain commands for jinja2
             and hiding solutions, e.g. `main.tex`

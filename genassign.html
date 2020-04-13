@@ -73,7 +73,7 @@ only one set of files is output to the <code>-r</code> root directory using:</p>
 <p>The masks are based on the columns numnber in the worksheet, and
 constructed using <code>#d</code> as field variables for the column number, where
 d is 1-9. An example is <code>'File_#2_#3'</code> in which the data in columns 2 and
-3 (using 1-base numbdering) is subsituted for the file or folder name.</p>
+3 (using 1-base numbering) is subsituted for the file or folder name.</p>
 <p>An important restriction in this mode is that the column names, which are
 the keys to be used in the LaTeX template, do not contain spaces, hyphens
 or underscores.</p>
@@ -89,7 +89,7 @@ id_name.pdf:</p>
                 [-s SOL_STEM] [-p PAPER_STEM] [-r ROOT] [-q QUESTDIR]
                 template worksheet
 </code></pre>
-<p>optional arguments:</p>
+<h3 id="optional-arguments">Optional Arguments:</h3>
 <p><code>-h</code>, <code>--help</code>
 show this help message and exit</p>
 <p><code>-t</code>, <code>--file_mask</code> FILE_MASK
@@ -109,7 +109,7 @@ Question paper filename stem, e.g. <code>'_paper'</code></p>
 Root directory name for main (solutions) output, e.g. <code>'solutions'</code></p>
 <p><code>-q</code>, <code>--questdir</code> QUESTDIR
 Directory name for questions output, e.g. <code>'questions'</code></p>
-<p>required named arguments:</p>
+<h3 id="required-named-arguments">Required Named Arguments:</h3>
 <p><code>template</code>
 LaTeX Template File with certain commands for jinja2
 and hiding solutions, e.g. <code>main.tex</code></p>
@@ -418,7 +418,11 @@ Usually one of 'solutions' or 'questions'</dd>
 <li><a href="#generic-useage">Generic Useage</a></li>
 </ul>
 </li>
-<li><a href="#commands">Commands</a></li>
+<li><a href="#commands">Commands</a><ul>
+<li><a href="#optional-arguments">Optional Arguments:</a></li>
+<li><a href="#required-named-arguments">Required Named Arguments:</a></li>
+</ul>
+</li>
 <li><a href="#requirements">Requirements</a></li>
 <li><a href="#template">Template</a><ul>
 <li><a href="#jinja2-templating">Jinja2 Templating</a></li>
