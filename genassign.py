@@ -5,146 +5,191 @@ r"""
 **Author:** Colin Caprani,
 [colin.caprani@monash.edu](mailto://colin.caprani@monash.edu)
 
-Overview:
-    `genassign` is a wrapper script that does two main things:
+## Overview
+`genassign` is a wrapper script that performs mail-merge like
+functionality, with adaptations for generating assessments and solutions.
+It does two main things:
+
+1. It repeatedly calls a LaTeX-PythonTex template file and places
+the output in subfolders of the template file directory.
+
+2. It substitutes student-specific data into each generated file.
+
+When the template file has randomization embedded, this is called
+automatically at each compilation, resulting in individualized assignments.
+Further, using a specific sequence of LaTeX commands, the question paper
+and associated solution file are generated separtely and placed into
+separate subfolders of the template file directory.
+
+`genassign` is written to allow indpendent compilation of the template file
+to facilitate development and checking of the questions and solutions,
+including close control of the randomization.
+
+It is not necessary for there to be PythonTex commands in the template.
+
+## Useage
+### Assignments
+Prepare a template LaTeX-PytonTex file with complete questions and
+solutions. Add the jinja templating variables to the document as necessary to
+identify individualization (e.g. student name, ID, etc).
+Include the LaTeX commands, and wrap the solutions as shown above.
+Use PythonTex to randomize the problem variables upon each compilation.
+
+*Standard example useage*:
+```python
+python genassign.py template.tex students.csv -t "Test 1 "
+```
+*To debug*:
+```python
+!debugfile('genassign.py', args='"template.tex" "students.csv"')
+```
+
+### Generic Useage
+`genassign` can perform generic mail-merge functionality for LaTeX
+documents. Use program option `-g` to enable generic mode. In this mode,
+only one set of files is output to the `-r` root directory using:
     
-    1. It repeatedly calls a LaTeX-PythonTex template file and places
-    the output in subfolders of the template file directory.
+* `-t` file mask
+
+* `-f` folder mask
+
+The masks are based on the columns numnber in the worksheet, and
+constructed using `#d` as field variables for the column number, where
+d is 1-9. An example is `'File_#2_#3'` in which the data in columns 2 and
+3 (using 1-base numbdering) is subsituted for the file or folder name.
+
+An important restriction in this mode is that the column names, which are
+the keys to be used in the LaTeX template, do not contain spaces, hyphens
+or underscores.
+
+Note that in the generic mode, it is not necessary for there to be the
+`hidden` commands in the LaTeX document.
+
+Example:
+This will put the mail merge letters in the current folder with file names
+id_name.pdf:
+```python
+python genassign.py letter.tex addresses.csv -g -t "#1_#2" -f . -r "letters"
+```
     
-    2. It substitutes student-specific data into each generated file.
+## Commands
+```
+genassign.py [-h] [-t FILE_MASK] [-f FOLDER_MASK] [-b] [-g]
+                [-s SOL_STEM] [-p PAPER_STEM] [-r ROOT] [-q QUESTDIR]
+                template worksheet
+```
+
+optional arguments:
+
+`-h`, `--help`
+show this help message and exit
+
+`-t`, `--file_mask` FILE_MASK
+Test title filename prefix, or if in generic mode -g then the filename mask
+                        
+`-f`, `--folder_stem` FOLDER_MASK
+Folder stem, for Moodle assignment types usually `onlinetext` or `file`
+or if in generic mode -g then the subfolder name mask
+
+`-b`, `--gen_paper`
+Whether or not to hide solution and generate the paper
+
+`-g`, `--generic`
+Operates in a generic mailmerge manner
+                        
+`-s`, `--sol_stem` SOL_STEM
+Solutions filename stem, e.g. `'_sols'`
+ 
+`-p`, `--paper_stem` PAPER_STEM
+Question paper filename stem, e.g. `'_paper'`
+ 
+`-r`, `--root` ROOT
+Root directory name for main (solutions) output, e.g. `'solutions'`
+ 
+`-q`, `--questdir` QUESTDIR
+Directory name for questions output, e.g. `'questions'`
+
+required named arguments:
+
+`template`  LaTeX Template File with certain commands for jinja2
+            and hiding solutions, e.g. `main.tex`
+  
+`worksheet` Student Moodle worksheet of specific format from
+            assignment grading, e.g. `students.csv`
     
-    When the template file has randomization embedded, this is called
-    automatically at each compilation, resulting in individualized assignments.
-    Further, using a specific sequence of LaTeX commands, the question paper
-    and associated solution file are generated separtely and placed into
-    separate subfolders of the template file directory.
+## Requirements
+System requirements are working installations of Python, LaTeX, and
+PythonTex. More specifically, `genassign` requires:
     
-    `genassign` is written to allow indpendent compilation of the template file
-    to facilitate deveopment and checking of the questions and solutions,
-    including close control of the randomization.
-    
-    It is not necessary for there to be PythonTex commands in the template.
-    
-Useage:
-    Prepare a template LaTeX-PytonTex file with complete questions and
-    solutions. Add the jinja templating variables to the document as necessary.
-    Include the LaTeX commands, and wrap the solutions as shown above.
-    Use PythonTex to randomize the problem variables upon each compilation.
-    
-    Standard example useage:
-    ```python
-    python genassign.py main.tex students.csv -t "Test 1"
-    ```
-    To debug:
-    ```python
-    !debugfile('genassign.py', args='"main.tex" "students.csv"')
-    ```
-    
-Commands:
-    ```
-    genassign.py [-h] [-t TITLE] [-m MOODLE_STEM] [-s SOL_STEM]
-                    [-p PAPER_STEM] [-a ANSDIR] [-q QUESTDIR]
-                    template worksheet
-    ```
-    
-    optional arguments:
-    
-    `-h`, `--help`
-    show this help message and exit
-    
-    `-t`, `--title`
-    Test title filename prefix
-                            
-    `-m`, `--moodle_stem`
-    Moodle assignment type folder stem, usually `onlinetext` or `file`
-                            
-    `-s`, `--sol_stem`
-    Solutions filename stem, e.g. `'_sols'`
-     
-    `-p`, `--paper_stem`
-    Question paper filename stem, e.g. `'_paper'`
-     
-    `-a`, `--ansdir`
-    Directory name for solutions output, e.g. `'solutions'`
-     
-    `-q`, `--questdir`
-    Directory name for questions output, e.g. `'questions'`
-    
-    required named arguments:
-    
-    `template`  LaTeX Template File with certain commands for jinja2
-                and hiding solutions, e.g. `main.tex`
-      
-    `worksheet` Student Moodle worksheet of specific format from
-                assignment grading, e.g. `students.csv`
-    
-Requirements:
-    System requirements are working installations of Python, LaTeX, and
-    PythonTex. More specifically, `genassign` requires:
+1. A LaTeX (optionally using PythonTex) template with certain specific
+commands;
+
+2. A Moodle grading worksheet (or generic database) for the assigment as
+input.
         
-    1. A LaTeX-PythonTex template with certain specific commands
+## Template
+There are two commands required at a minimum in the LaTeX file for Moodle
+assignment output.
+
+### Jinja2 Templating
+
+The command for *jinja2* templating
+
+```latex
+    \newcommand*{\VAR}[1]{}
+```
+
+which has no effect on the template other than to identify variables
+used for subsitution of student-specific information as defined in
+Moodle worksheet:
     
-    2. A Moodle grading worksheet for the assigment as input
-        
-Template:
-    There are two commands required at a minimum in the LaTeX file.
+* Student's full name: `\VAR{FullName}`
+
+* Student's ID: `\VAR{StudentID}`
+
+In case it is useful to have the fields to be replaced highlight ni the LaTeX
+template, the templating command can be altered, e.g. to highlight the fields
+in bold red:
+    ```latex
+    \newcommand*{\VAR}[1]{\textcolor{red}{\textbf{#1}}}
+    ```
+This formatting does not appear in the rendereed documents. If this is
+required, the `\VAR{Field}` should be wrapped in the desired formatting
+in the document body.
+
+### LaTeX Commands
+
+The LaTeX commands to wrap the solutions, so they can be toggled on and
+off must be placed in the document preamble. The following must appear:
     
-    *Jinja2 Templating*
+```
+\usepackage{comment}
     
-    The command for *jinja2* templating
+\newif\ifhidden
+% This defines whether to show the hidden content or not.
+\hiddenfalse
+\ifhidden 	% if \ hiddentrue
+    \excludecomment{hidden}	% Exclude text within the "hidden" environment
+\else   	% \ hiddenfalse
+    \includecomment{hidden}	% Include text in the "hidden" environment
+\fi
+```
+
+so that the solutions are wrapped in the document body as follows
+
+```
+\begin{hidden}
+    ...LaTeX solution code, including PythonTex as necessary
+\end{hidden}
+```
+Note that the LaTeX commands for hiding solutions are not required when
+operatin in generic mail-maerge mode.
     
-    ```
-        \newcommand*{\VAR}[1]{}
-    ```
-    
-    which has no effect on the template other than to identify variables
-    used for subsitution of student-specific information as defined in
-    Moodle worksheet:
-        
-    * Student's full name: `\VAR{FULL_NAME}`
-    
-    * Student's ID: `\VAR{STUDENT_ID}`
-    
-    *LaTeX Commands*
-    
-    The LaTeX commands to wrap the solutions, so they can be toggled on and
-    off must be placed in the document preamble. The following must appear:
-        
-    ```
-    \usepackage{comment}
-        
-    \newif\ifhidden
-    % This defines whether to show the hidden content or not.
-    \hiddenfalse
-    \ifhidden 	% if \ hiddentrue
-        \excludecomment{hidden}	% Exclude text within the "hidden" environment
-    \else   	% \ hiddenfalse
-        \includecomment{hidden}	% Include text in the "hidden" environment
-    \fi
-    ```
-    
-    so that the solutions are wrapped in the document body as follows
-    
-    ```
-    \begin{hidden}
-        ...LaTeX solution code, including PythonTex as necessary
-    \end{hidden}
-    ```
-    
-Documentation:
-    To use `pdoc` to generate this documentation, issue this:
-    ```
-    pdoc --html --force --config show_source_code=False genassign
-    ```
-    And to generate a PDF of the documentation, first generate the markdown
-    to the standard output stream and pipe it to `doc.text`:
-    ```
-    pdoc --pdf --force --config show_source_code=False genassign > doc.txt
-    ```
-    then issue this command:
-    ```
-    pandoc --metadata=title:"genassign Documentation" --toc --toc-depth=4 --from=markdown+abbreviations --pdf-engine=xelatex --output=genassign.pdf doc.txt
-    ```
+## Documentation
+To use `pdoc` to generate this documentation, issue this:
+```
+pdoc --html --force --output-dir . --config show_source_code=False genassign
+```
 """
 
 import glob
@@ -158,6 +203,8 @@ import time
 import jinja2  # https://tug.org/tug2019/slides/slides-ziegenhagen-python.pdf
 import fileinput
 import argparse
+import re
+from types import SimpleNamespace
 
 
 def make_template(texfile,tmpfile):
@@ -198,14 +245,16 @@ def make_template(texfile,tmpfile):
     return latex_jinja_env.get_template(texfile)
     
     
-def render_student_tex_file(student,template,tmpfile):
+def render_file(values,keys,template,tmpfile):
     """
-    Renders the tex file for compilation for a specific student
+    Renders the tex file for compilation for a specific set of values
 
     Parameters
     ----------
-    student : tuple of string
-        Contains student's data: Moodle ID, Full Name, Student ID.
+    values : list of strings
+        Contains the values to be placed against each template variable
+    keys : list of strings
+        Contains template variable names to be replaced
     template : jinja2 template
         sed to render the LaTeX file.
     tmpfile : string
@@ -216,11 +265,6 @@ def render_student_tex_file(student,template,tmpfile):
     None.
 
     """
-    values = list(student)  # Converts student tuple to list
-    # List of keys to look for in template
-    # - these are case sensitive
-    # - and must be in same order as student-tuple
-    keys = ['MOODLE_ID','FULL_NAME','STUDENT_ID']
     
     # combine template and variables
     options = dict(zip(keys, values))
@@ -231,68 +275,43 @@ def render_student_tex_file(student,template,tmpfile):
         outfile.write(document)
 
 
-def student_strings(student,moodle_str):
-    """
-    Creates the file and folder name strings for a student
-
-    Parameters
-    ----------
-    student : tuple of string
-        Contains student's data: Moodle ID, Full Name, Student ID.
-    moodle_str : string
-        Folder name stem as appropriate to the type of Moodle assigment.
-        Usually 'file' or 'onlinetext'
-
-    Returns
-    -------
-    student_file : string
-        The student-specific part of the pdf filename
-    student_folder : string
-        The student-specific part of the folder name
-
-    """
-    moodle_id, full_name, student_id = student
-    student_file = '%s_%s' % (full_name,student_id)
-    student_folder = '%s_%s_assignsubmission_%s_' \
-        % (full_name,moodle_id,moodle_str)
-    return student_file,student_folder
-
-
 def remove_readonly(func, path, excinfo):
     """Attempts to remove a read-only file by changing the permissions"""
     os.chmod(path, stat.S_IWRITE)
     func(path)
     
 
-def gen_q_and_a(student,assign_strings):
+def compile_files(values,tmpfile,params):
     """
     Generates the Questions and Answers documents for a student
 
     Parameters
     ----------
-    student : tuple of string
+    values : tuple of string
         Contains student's data: Moodle ID, Full Name, Student ID.
-    assign_strings : tuple of strings
-        Contains prgram string variables in the order:
-            tmpfile = temporary file name
-            moodle_str = older name stem as appropriate to the type of
-                Moodle assigment. Usually 'file' or 'onlinetext'
-            filename_prefix = title of test typically
-            solutions_stem = filename postfix for solutions pdf
-            questions_stem = filename postfix for questions pdf
-            solutions_dir = name of solutions directory
-            questions_dir = name of questons directory
+    tmpfile : string
+        Name of the temporary files.
+    params : data structure
+        Contains program parameters:
+            * template = name of LaTeX template file
+            * worksheet = name of data spreadsheet csv
+            * file_mask = title of test typically, or masked filename
+            * folder_mask = folder name stem as appropriate to the type of
+                Moodle assigment - usually 'file' or 'onlinetext'.
+                Or in generic mode the mask of the subfolder name.
+            * gen_paper = whether or not to generate the test paper only.
+            * generic = whether or not in generic "mailmerge" mode
+            * sol_stem = filename postfix for solutions pdf
+            * paper_stem = filename postfix for questions pdf
+            * root = name of root (usually solutions) directory
+            * questdir = name of questons directory
 
     Returns
     -------
     None.
 
     """
-    # Unpack tuple
-    (tmpfile,moodle_str,filename_prefix,
-        solutions_stem,questions_stem,
-        solutions_dir,questions_dir) = assign_strings
-    
+
     # Compilation commands
     cmd_stem = " %s.tex" % tmpfile
     cmd_pdflatex = 'pdflatex -shell-escape -synctex=1 ' \
@@ -308,43 +327,47 @@ def gen_q_and_a(student,assign_strings):
     subprocess.call(cmd_pythontex, shell=True)
     subprocess.call(cmd_pdflatex, shell=True)
     
-    move_pdf(student,tmpfile,solutions_dir,
-             solutions_stem,moodle_str,filename_prefix)
+    file_mask = params.file_mask
+    folder_mask = params.folder_mask
+    if not args.generic:
+        file_mask += params.sol_stem
     
-    # Compile test only, removing solutions
-    set_hidden(tmpfile+'.tex',hidden=True)
+    move_pdf(tmpfile,params.root,
+             demask(values,file_mask),
+             demask(values,folder_mask))
     
-    # Now compile LaTeX ONLY (to avoid generating any new random variables)
-    # Do it twice to update toc
-    subprocess.call(cmd_pdflatex, shell=True)
-    subprocess.call(cmd_pdflatex, shell=True)
+    if params.gen_paper and not params.generic:
+        # Compile test only, removing solutions
+        set_hidden(tmpfile+'.tex',hidden=True)
+        
+        # Now compile LaTeX ONLY (to avoid generating any new random variables)
+        # Do it twice to update toc
+        subprocess.call(cmd_pdflatex, shell=True)
+        subprocess.call(cmd_pdflatex, shell=True)
+        
+        # reset file mask
+        file_mask = params.file_mask + params.paper_stem
+        
+        move_pdf(tmpfile,params.questdir,
+                 demask(values,file_mask),
+                 demask(values,folder_mask))
     
-    move_pdf(student,tmpfile,questions_dir,
-             questions_stem,moodle_str,filename_prefix)
     
-    
-def move_pdf(student,tmpfile,root,file_stem,moodle_str,prefix):
+def move_pdf(tmpfile,root,file,folder):
     """
     Moves the compiled PDF to the appropriate folder
 
     Parameters
     ----------
-    student : tuple of string
-        Contains student's data: Moodle ID, Full Name, Student ID.
     tmpfile : string
         Name of the temporary files.
     root : string
-        The name of the subfodler in which the student's folder will be placed.
+        The name of the subfolder in which the student's folder will be placed.
         Usually one of 'solutions' or 'questions'
-    file_stem : string
-        Postfix to be applied to student-specific string to distinguish
-        questions from solutions
-    moodle_str : string
-        Folder name stem as appropriate to the type of Moodle assigment.
-        Usually 'file' or 'onlinetext'
-    prefix : string
-        Prefix to be applied to the student-specific filenames. Usually the
-        title of the test.
+    file : string
+        The filename to be used (no extension)
+    folder : string
+        The subfolder name to root folder where the file will be put
 
     Returns
     -------
@@ -353,27 +376,50 @@ def move_pdf(student,tmpfile,root,file_stem,moodle_str,prefix):
     """
     try:
         # Rename & move the PDF file to a new subfolder
-        student_file,student_folder = student_strings(student,moodle_str)
-        student_pdf = prefix + student_file + file_stem + '.pdf'
-        if os.path.isfile(student_pdf):
-            os.remove(student_pdf)
-        os.rename(tmpfile+'.pdf', student_pdf)
+        file_pdf = file + '.pdf'
+        if os.path.isfile(file_pdf):
+            os.remove(file_pdf)
+        os.rename(tmpfile+'.pdf', file_pdf)
         
         # Create root if not exist
         if not os.path.exists(root):
             os.mkdir(root)
         
         # If folder exists delete it and contents
-        student_path = os.path.join(root, student_folder)
-        if os.path.exists(student_path):
-            old = student_folder + '_' + tempfile
-            os.rename(student_folder,old)
+        file_path = os.path.join(root, folder)
+        if os.path.exists(file_path):
+            old = folder + '_' + tmpfile
+            os.rename(folder,old)
             shutil.rmtree(old, onerror=remove_readonly)
     
-        os.mkdir(student_path)
-        shutil.move(student_pdf, os.path.join(student_path, student_pdf))
+        os.mkdir(file_path)
+        shutil.move(file_pdf, os.path.join(file_path, file_pdf))
     except:
-        print('*** ERROR: Cannot move student pdf: ', student_pdf)
+        print('*** ERROR: Cannot move rendered pdf: ', file_pdf)
+
+
+def demask(values,mask):
+    """
+    Demasks a string masked with fields indicated by '#d' where d is a
+    positve integer 1-9 using 1-based referencing of the entries in values.
+
+    Parameters
+    ----------
+    values : list
+        Values to be placed into mask string identified by 1-based index.
+    mask : string
+        Mask string including fields for subsitution indicated by #d.
+
+    Returns
+    -------
+    mask : string
+        Demasked string with substituted values for the fields.
+
+    """
+    id = [int(s) for s in re.findall(r'\#(\d)', mask)]
+    for i in id:
+        mask = mask.replace('#'+str(i),str(values[i-1]))
+    return mask
 
 
 def set_hidden(texfile,hidden=True):
@@ -410,47 +456,119 @@ def set_hidden(texfile,hidden=True):
             print(line.replace(str_find, str_replace), end='')
 
     
-def gen_assign(student,template,assign_strings):
+def gen_files(values,keys,template,tmpfile,params):
     """
     Drives the rendering and compilation process for each student, and
     cleans up the files afterwards.
 
     Parameters
     ----------
-    student : tuple of string
-        Contains student's data: Moodle ID, Full Name, Student ID.
+    values : tuple of string
+        Contains row of data: for student's: Moodle ID, Full Name, Student ID.
+    keys : tuple of string
+        Contains the field names of the data (i.e. worksheet column names)
     template : jinja2 template
         set to render the LaTeX file.
-    assign_strings : tuple of strings
-        Contains prgram string variables in the order:
-            tmpfile = temporary file name
-            moodle_str = older name stem as appropriate to the type of
-                Moodle assigment. Usually 'file' or 'onlinetext'
-            filename_prefix = title of test typically
-            solutions_stem = filename postfix for solutions pdf
-            questions_stem = filename postfix for questions pdf
-            solutions_dir = name of solutions directory
-            questions_dir = name of questons directory
+    tmpfile : string
+        Name of the temporary files.
+    params : data structure
+        Contains program parameters:
+            * template = name of LaTeX template file
+            * worksheet = name of data spreadsheet csv
+            * file_mask = title of test typically, or masked filename
+            * folder_mask = folder name stem as appropriate to the type of
+                Moodle assigment - usually 'file' or 'onlinetext'.
+                Or in generic mode the mask of the subfolder name.
+            * gen_paper = whether or not to generate the test paper only.
+            * generic = whether or not in generic "mailmerge" mode
+            * sol_stem = filename postfix for solutions pdf
+            * paper_stem = filename postfix for questions pdf
+            * root = name of root (usually solutions) directory
+            * questdir = name of questons directory
 
     Returns
     -------
     None.
 
     """
-    tmpfile = assign_strings[0]
 
     # Create student tex file
-    render_student_tex_file(student,template,tmpfile)
+    render_file(values,keys,template,tmpfile)
     
     try:
-        gen_q_and_a(student,assign_strings)
+        compile_files(values,tmpfile,params)
     
     finally:        # clean up files
         for f in glob.glob(tmpfile+".*"):
             os.remove(f)
-        os.remove('comment.cut')
-        shutil.rmtree('pythontex-files-' + tmpfile, onerror=remove_readonly)
+        path = 'comment.cut'
+        if os.path.exists(path):
+            os.remove(path)
+        path = 'pythontex-files-' + tmpfile
+        if os.path.exists(path):
+            shutil.rmtree(path, onerror=remove_readonly)
 
+
+def generic(csvfile):
+    """
+    Processes the csvfile to extract the dataframe and keys for use as a
+    generic mail merge application.
+
+    Parameters
+    ----------
+    csvfile : string
+        The name of the worksheet containing the data.
+
+    Returns
+    -------
+    df : dataframe
+        The pandas dataframe object.
+    keys : list of strings
+        The keys for the data, i.e. the column names, which must be single
+        words with no hyphens or underscores (must meet both python variable
+        name rules and play nice with LaTeX)
+
+    """
+    df = pd.read_csv(csvfile)
+    keys = list(df.columns.values)
+
+    return df, keys
+
+
+def moodle(csvfile):
+    """
+    Pre-processes usual inputs for the dataframe and more generic file
+    and folder masks.
+
+    Parameters
+    ----------
+    csvfile : string
+        The name of the worksheet containing the student Moodle data.
+
+    Returns
+    -------
+    df : dataframe
+        The pandas dataframe object.
+    keys : list of strings
+        The keys for the Moodle data, i.e. adapted column names
+
+    """
+    # Parses a csv file from Moodle grading worksheet
+    df = pd.read_csv(csvfile)
+    df = df[["Identifier","Full name","ID number"]]
+    df.Identifier = df.Identifier.str.replace('Participant ','')
+    df = df.rename(columns={'Identifier': 'MoodleID',
+                            'ID number': 'StudentID'})
+    
+    # List of keys to look for in template, suggest use CamelCase
+    # - these are case sensitive
+    # - and must be in same order as student-tuple
+    # - canot use underscores, as these do not play nice in LaTeX
+    # - cannot use hyphens, as these are not allowed in Python variables
+    keys = ['MoodleID','FullName','StudentID']
+    
+    return df, keys
+    
 
 def main(args):
     """
@@ -469,44 +587,47 @@ def main(args):
     """
     t = time.time()
     
-    # Main inputs
-    texfile = args.template
-    csvfile = args.worksheet
-    # These will change each test
-    moodle_str = args.moodle_stem
-    filename_prefix = args.title
-    # These are unlikely to change each test
-    solutions_stem = args.sol_stem
-    questions_stem = args.paper_stem
-    solutions_dir = args.ansdir
-    questions_dir = args.questdir
-    
-    # Parses a csv file from Moodle grading worksheet
-    df = pd.read_csv(csvfile)
-    df = df[["Identifier","Full name","ID number"]]
-    df.Identifier = df.Identifier.str.replace('Participant ','')
-    df = df.rename(columns={'Identifier': 'Moodle ID',
-                            'ID number': 'Student ID'})
+    # Create a data structure of the args to pass around
+    params = SimpleNamespace(
+        template=args.template,
+        worksheet=args.worksheet,
+        file_mask=args.file_mask,
+        folder_mask=args.folder_mask,
+        gen_paper=args.gen_paper,
+        generic=args.generic,
+        sol_stem=args.sol_stem,
+        paper_stem=args.paper_stem,
+        root=args.root,
+        questdir=args.questdir)
     
     tmpfile = next(tempfile._get_candidate_names())
-    template = make_template(texfile,tmpfile)
-    assign_strings = (tmpfile,moodle_str,filename_prefix,
-                      solutions_stem,questions_stem,
-                      solutions_dir,questions_dir)
+    template = make_template(args.template,tmpfile)
     
     # Clear output folders if they already exist
-    if os.path.exists(solutions_dir):
-        shutil.rmtree(solutions_dir, onerror=remove_readonly)
-    if os.path.exists(questions_dir):
-        shutil.rmtree(questions_dir, onerror=remove_readonly)
-       
+    if os.path.exists(params.root):
+        shutil.rmtree(params.root, onerror=remove_readonly)
+    if os.path.exists(params.questdir) and params.gen_paper:
+        shutil.rmtree(params.questdir, onerror=remove_readonly)
+    
+    if not params.generic:
+        df,keys = moodle(params.worksheet)
+        params.file_mask = args.file_mask + '#2_#3'  # stems to be added later
+        params.folder_mask = '#2_#1_assignsubmission_' + params.folder_mask
+    else:
+        params.gen_paper = False  # override generating paper
+        df,keys = generic(params.worksheet)
+    
     # Apply function to each row of df
-    df.apply(gen_assign, axis=1, template=template,
-             assign_strings=assign_strings)
+    df.apply(gen_files, axis=1, keys=keys, template=template,
+             tmpfile=tmpfile, params=params)
     
     print('')
     print('*** genassign has finished ***')
-    print("Papers & solutions for %d students generated in %2.0f sec"
+    if not params.generic == '':
+        print("Operating in generic mode")
+    elif not params.gen_paper:
+        print("* Warning: Paper generation was not requested")
+    print("Execution for %d individuals generated in %2.0f sec"
           % (len(df.index), time.time() - t))
 
 
@@ -523,12 +644,23 @@ if __name__ == '__main__':
                               help='Student Moodle worksheet of \
                               specific format from assignment grading.')
     # Main optionals
-    parser.add_argument('-t','--title',
-                        help='Test title filename prefix',
+    parser.add_argument('-t','--file_mask',
+                        help='Test title filename prefix, or if in generic\
+                        mode -g then the filename mask',
                         required=False, default='')
-    parser.add_argument('-m','--moodle_stem',
-                        help='Moodle assignment type \
-                        folder stem', required=False, default='onlinetext')
+    parser.add_argument('-f','--folder_mask',
+                        help='Folder stem for Moodle assignment type\
+                            usually "onlinetext" or "file"\
+                            or if in generic mode -g then the foldername mask',
+                        required=False, default='onlinetext')
+    parser.add_argument('-b','--gen_paper',
+                        help='Whether or not to hide solution\
+                            and generate paper', required=False, default=True,
+                        action='store_false')
+    # Generic mode option
+    parser.add_argument('-g','--generic',
+                        help='Operates in a generic mailmerge manner',
+                        required=False, default=False, action='store_true')
     # Unusual optionals
     parser.add_argument('-s','--sol_stem',
                         help='Solutions filename stem',
@@ -536,8 +668,8 @@ if __name__ == '__main__':
     parser.add_argument('-p','--paper_stem',
                         help='Question paper filename stem',
                         required=False, default='_paper')
-    parser.add_argument('-a','--ansdir',
-                        help='Directory name for solutions output',
+    parser.add_argument('-r','--root',
+                        help='Root directory name for main (solutions) output',
                         required=False, default='solutions')
     parser.add_argument('-q','--questdir',
                         help='Directory name for questions output',

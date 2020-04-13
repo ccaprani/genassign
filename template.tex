@@ -1,6 +1,6 @@
 \documentclass[a4paper,11pt]{article}
 \usepackage[margin=2cm]{geometry}
-\usepackage[utf8]{inputenc}
+%\usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{float}
 \usepackage{stanli}
@@ -43,8 +43,8 @@
 % to emphasize in the template those variables to be replaced. Once rendered, this formatting
 % has not effect as jinja replaces the \VAR{variable} entirely.
 \usepackage{xcolor}
-\newcommand*{\VAR}[1]{\textcolor{red}{\MakeUppercase{\textbf{#1}}}}
-\newcommand*{\BLOCK}[1]{\textcolor{red}{\MakeUppercase{\textbf{#1}}}}
+\newcommand*{\VAR}[1]{\textcolor{red}{\textbf{#1}}}
+\newcommand*{\BLOCK}[1]{\textcolor{red}{\textbf{#1}}}
 
 \usepackage{comment}
 \newif\ifhidden
@@ -56,7 +56,7 @@
 	\includecomment{hidden}		% Include text in the "hidden" environment
 \fi
 
-\title{CIV4280 Bridge Design \& Assessment\\Test for \VAR{FULL-NAME} (\VAR{STUDENT-ID})}
+\title{CIV4280 Bridge Design \& Assessment\\Test for \VAR{FullName} (\VAR{StudentID})}
 \date{Semester 1, 2020}
 \author{Dr Colin Caprani\\Dr Mayer Melhem}
 
@@ -71,42 +71,42 @@
 %{\sf\tighttoc}
 \newpage
 
-\section{Tutorial Problem}
+\section{Problem}
 
 \begin{pycode}
-from ps2 import *
-import random
-
-L_list = [3.5,3.75,4.0,4.25,4.5,4.75,5.0]  # m
-M_list = [-80, -30, -50]	# kNm
-I = 37.5e-6 	# m4
-J = 75e-6   	# m4
-E = 200     	# GPa
-G = 80      	# GPa
-
-# Unit conversions MNm2
-E *= 1e3
-G *= 1e3
-
-L = random.choice(L_list) 		# Member length
-M = random.choice(M_list) 		# y-axis moment load @ C
-
-grid = [L,I,J,E,G,M]
-
-EI_L = E*I/L
-GJ_L = G*J/L
-
-# Call analysis
-D = solve_D(grid)
-theta_C, theta_D, theta_F = D
-Fcd = eleF(eleK(grid),d_CD(D)*1e3)
-Fce = eleF(eleK(grid),d_CE(D)*1e3)
-Fcf = eleF(eleK(grid),d_CF(D)*1e3)
-Fgc = eleF(eleK(grid),d_GC(D)*1e3)
-Fcg = eleF(eleK(grid),d_CG(D)*1e3)
-
-bmd_scale=8
-tmd_scale=5
+	from testscript import *
+	import random
+	
+	L_list = [3.5,3.75,4.0,4.25,4.5,4.75,5.0]  # m
+	M_list = [-80, -30, -50]	# kNm
+	I = 37.5e-6 	# m4
+	J = 75e-6   	# m4
+	E = 200     	# GPa
+	G = 80      	# GPa
+	
+	# Unit conversions MNm2
+	E *= 1e3
+	G *= 1e3
+	
+	L = random.choice(L_list) 		# Member length
+	M = random.choice(M_list) 		# y-axis moment load @ C
+	
+	grid = [L,I,J,E,G,M]
+	
+	EI_L = E*I/L
+	GJ_L = G*J/L
+	
+	# Call analysis
+	D = solve_D(grid)
+	theta_C, theta_D, theta_F = D
+	Fcd = eleF(eleK(grid),d_CD(D)*1e3)
+	Fce = eleF(eleK(grid),d_CE(D)*1e3)
+	Fcf = eleF(eleK(grid),d_CF(D)*1e3)
+	Fgc = eleF(eleK(grid),d_GC(D)*1e3)
+	Fcg = eleF(eleK(grid),d_CG(D)*1e3)
+	
+	bmd_scale=8
+	tmd_scale=5
 \end{pycode}
 
 The symmetric grillage shown in \Cref{fig:grid} has fixed ends at \emph{E} and \emph{G} and
@@ -181,7 +181,7 @@ Draw the resulting bending and torsion moment diagrams for the applied load show
 
 \begin{hidden}	
 \clearpage
-\section{Tutorial Solution}
+\section{Solution}
 
 \textbf{Step 1:} Define coordinate system. This is already provided in \Cref{fig:grid}. 
 
