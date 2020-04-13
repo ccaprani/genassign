@@ -1,0 +1,26 @@
+\documentclass[11pt,a4paper]{letter}
+\usepackage[utf8]{inputenc}
+
+% Commands for jinja2 templating
+% Instead of empty braces (i.e. no command effect), here we make the variable uppercase red
+% to emphasize in the template those variables to be replaced. Once rendered, this formatting
+% has not effect as jinja replaces the \VAR{variable} entirely.
+\usepackage{xcolor}
+\newcommand*{\VAR}[1]{\textcolor{red}{\textbf{#1}}}
+\newcommand*{\BLOCK}[1]{\textcolor{red}{\textbf{#1}}}
+
+\address{Colin Caprani\\Monash University} 
+\signature{Dr Colin Caprani} 
+\begin{document} 
+	\begin{letter}{\VAR{name}\\\VAR{address1}\\\VAR{address2}\\\VAR{country}} 
+		\opening{Dear \VAR{name}} 
+		
+		I am writing to inform you that you have won our recent raffle.
+		Please collect it at your earliest convenience.
+		
+		\closing{Sincerely} 
+		%\cc{Cclist} 
+		%\ps{adding a postscript} 
+		%\encl{list of enclosed material} 
+	\end{letter} 
+\end{document}
