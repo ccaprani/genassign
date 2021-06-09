@@ -3,15 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.7.2" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>genassign API documentation</title>
 <meta name="description" content="*Generates Individualized Assignments and Solutions based on a LaTeX Template* …" />
-<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
-<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
-<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
 <body>
 <main>
@@ -24,7 +26,7 @@
 <p><strong>Author:</strong> Colin Caprani,
 <a href="mailto://colin.caprani@monash.edu">colin.caprani@monash.edu</a></p>
 <h2 id="overview">Overview</h2>
-<p><a title="genassign" href="#genassign"><code>genassign</code></a> is a wrapper script that performs mail-merge like
+<p><code><a title="genassign" href="#genassign">genassign</a></code> is a wrapper script that performs mail-merge like
 functionality, with adaptations for generating assessments and solutions.
 It does two main things:</p>
 <ol>
@@ -39,27 +41,27 @@ the output in subfolders of the template file directory.</p>
 <p>When the template file has randomization embedded, this is called
 automatically at each compilation, resulting in individualized assignments.
 Further, using a specific sequence of LaTeX commands, the question paper
-and associated solution file are generated separtely and placed into
+and associated solution file are generated separately and placed into
 separate subfolders of the template file directory.</p>
-<p><a title="genassign" href="#genassign"><code>genassign</code></a> is written to allow indpendent compilation of the template file
+<p><code><a title="genassign" href="#genassign">genassign</a></code> is written to allow independent compilation of the template file
 to facilitate development and checking of the questions and solutions,
 including close control of the randomization.</p>
 <p>It is not necessary for there to be PythonTex commands in the template.</p>
-<h2 id="useage">Useage</h2>
+<h2 id="usage">Usage</h2>
 <h3 id="assignments">Assignments</h3>
 <p>Prepare a template LaTeX-PytonTex file with complete questions and
 solutions. Add the jinja templating variables to the document as necessary to
 identify individualization (e.g. student name, ID, etc).
 Include the LaTeX commands, and wrap the solutions as shown above.
 Use PythonTex to randomize the problem variables upon each compilation.</p>
-<p><em>Standard example useage</em>:</p>
-<pre><code class="python">python genassign.py template.tex students.csv -t &quot;Test 1 &quot;
+<p><em>Standard example usage</em>:</p>
+<pre><code class="language-python">python genassign.py -e template.tex students.csv -t &quot;Test 1 &quot;
 </code></pre>
 <p><em>To debug</em>:</p>
-<pre><code class="python">!debugfile('genassign.py', args='&quot;template.tex&quot; &quot;students.csv&quot;')
+<pre><code class="language-python">!debugfile('genassign.py', args='-e &quot;template.tex&quot; &quot;students.csv&quot;')
 </code></pre>
-<h3 id="generic-useage">Generic Useage</h3>
-<p><code>genassign</code> can perform generic mail-merge functionality for LaTeX
+<h3 id="generic-usage">Generic Usage</h3>
+<p><code><a title="genassign" href="#genassign">genassign</a></code> can perform generic mail-merge functionality for LaTeX
 documents. Use program option <code>-g</code> to enable generic mode. In this mode,
 only one set of files is output to the <code>-r</code> root directory using:</p>
 <ul>
@@ -70,10 +72,10 @@ only one set of files is output to the <code>-r</code> root directory using:</p>
 <p><code>-f</code> folder mask</p>
 </li>
 </ul>
-<p>The masks are based on the columns numnber in the worksheet, and
+<p>The masks are based on the columns number in the worksheet, and
 constructed using <code>#d</code> as field variables for the column number, where
 d is 1-9. An example is <code>'File_#2_#3'</code> in which the data in columns 2 and
-3 (using 1-base numbering) is subsituted for the file or folder name.</p>
+3 (using 1-base numbering) is substituted for the file or folder name.</p>
 <p>An important restriction in this mode is that the column names, which are
 the keys to be used in the LaTeX template, do not contain spaces, hyphens
 or underscores.</p>
@@ -82,23 +84,26 @@ or underscores.</p>
 <p>Example:
 This will put the mail merge letters in the current folder with file names
 id_name.pdf:</p>
-<pre><code class="python">python genassign.py letter.tex addresses.csv -g -t &quot;#1_#2&quot; -f . -r &quot;letters&quot;
+<pre><code class="language-python">python genassign.py letter.tex addresses.csv -g -t &quot;#1_#2&quot; -f . -r &quot;letters&quot;
 </code></pre>
 <h2 id="commands">Commands</h2>
-<pre><code>genassign.py [-h] [-t FILE_MASK] [-f FOLDER_MASK] [-b] [-g]
-                [-s SOL_STEM] [-p PAPER_STEM] [-r ROOT] [-q QUESTDIR]
+<pre><code>genassign.py [-h] [-t FILE_MASK] [-f FOLDER_MASK] [-b] [-g] [-e]
+                [-s SOL_STEM] [-p PAPER_STEM] [-r ROOT] [-q QUESTDIR] 
+                [-w PASSWORD]
                 template worksheet
 </code></pre>
 <h3 id="optional-arguments">Optional Arguments:</h3>
 <p><code>-h</code>, <code>--help</code>
 show this help message and exit</p>
 <p><code>-t</code>, <code>--file_mask</code> FILE_MASK
-Test title filename prefix, or if in generic mode -g then the filename mask</p>
+Test title filename prefix, or if in generic mode <code>-g</code> then the filename mask</p>
 <p><code>-f</code>, <code>--folder_stem</code> FOLDER_MASK
 Folder stem, for Moodle assignment types usually <code>onlinetext</code> or <code>file</code>
-or if in generic mode -g then the subfolder name mask</p>
+or if in generic mode <code>-g</code> then the subfolder name mask</p>
 <p><code>-b</code>, <code>--gen_paper</code>
-Whether or not to hide solution and generate the paper</p>
+If set, the paper without solutions will not be produced</p>
+<p><code>-e</code>, <code>--encrypt</code>
+If set, the produced PDFs will be encrypted</p>
 <p><code>-g</code>, <code>--generic</code>
 Operates in a generic mailmerge manner</p>
 <p><code>-s</code>, <code>--sol_stem</code> SOL_STEM
@@ -109,6 +114,8 @@ Question paper filename stem, e.g. <code>'_paper'</code></p>
 Root directory name for main (solutions) output, e.g. <code>'solutions'</code></p>
 <p><code>-q</code>, <code>--questdir</code> QUESTDIR
 Directory name for questions output, e.g. <code>'questions'</code></p>
+<p><code>-w</code>,<code>--password</code> PASSWORD
+Password for encrypted PDFs, e.g. <code>'d0n0tC0py-21'</code></p>
 <h3 id="required-named-arguments">Required Named Arguments:</h3>
 <p><code>template</code>
 LaTeX Template File with certain commands for jinja2
@@ -117,26 +124,28 @@ and hiding solutions, e.g. <code>main.tex</code></p>
 assignment grading, e.g. <code>students.csv</code></p>
 <h2 id="requirements">Requirements</h2>
 <p>System requirements are working installations of Python, LaTeX, and
-PythonTex. More specifically, <code>genassign</code> requires:</p>
+PythonTex. More specifically, <code><a title="genassign" href="#genassign">genassign</a></code> requires:</p>
 <ol>
 <li>
 <p>A LaTeX (optionally using PythonTex) template with certain specific
 commands;</p>
 </li>
 <li>
-<p>A Moodle grading worksheet (or generic database) for the assigment as
+<p>A Moodle grading worksheet (or generic database) for the assignment as
 input.</p>
 </li>
 </ol>
+<p>The Pandas library is also required, which can be obtained via PyPI or
+Anaconda, depending on your python environment setup.</p>
 <h2 id="template">Template</h2>
 <p>There are two commands required at a minimum in the LaTeX file for Moodle
 assignment output.</p>
 <h3 id="jinja2-templating">Jinja2 Templating</h3>
 <p>The command for <em>jinja2</em> templating</p>
-<pre><code class="latex">    \newcommand*{\VAR}[1]{}
+<pre><code class="language-latex">    \newcommand*{\VAR}[1]{}
 </code></pre>
 <p>which has no effect on the template other than to identify variables
-used for subsitution of student-specific information as defined in
+used for substitution of student-specific information as defined in
 Moodle worksheet:</p>
 <ul>
 <li>
@@ -151,7 +160,7 @@ template, the templating command can be altered, e.g. to highlight the fields
 in bold red:
 <code>latex
 \newcommand*{\VAR}[1]{\textcolor{red}{\textbf{#1}}}</code>
-This formatting does not appear in the rendereed documents. If this is
+This formatting does not appear in the rendered documents. If this is
 required, the <code>\VAR{Field}</code> should be wrapped in the desired formatting
 in the document body.</p>
 <h3 id="latex-commands">LaTeX Commands</h3>
@@ -174,7 +183,7 @@ off must be placed in the document preamble. The following must appear:</p>
 \end{hidden}
 </code></pre>
 <p>Note that the LaTeX commands for hiding solutions are not required when
-operatin in generic mail-maerge mode.</p>
+operating in generic mail-merge mode.</p>
 <h2 id="documentation">Documentation</h2>
 <p>To use <code>pdoc</code> to generate this documentation, issue this:</p>
 <pre><code>pdoc --html --force --output-dir . --config show_source_code=False genassign
@@ -191,14 +200,14 @@ operatin in generic mail-maerge mode.</p>
 <span>def <span class="ident">compile_files</span></span>(<span>values, tmpfile, params)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Generates the Questions and Answers documents for a student</p>
+<div class="desc"><p>Generates the Questions and Answers documents for a student</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>values</code></strong> :&ensp;<code>tuple</code> of <code>string</code></dt>
 <dd>Contains student's data: Moodle ID, Full Name, Student ID.</dd>
 <dt><strong><code>tmpfile</code></strong> :&ensp;<code>string</code></dt>
 <dd>Name of the temporary files.</dd>
-<dt><strong><code>params</code></strong> :&ensp;<code>data</code> <code>structure</code></dt>
+<dt><strong><code>params</code></strong> :&ensp;<code>data structure</code></dt>
 <dd>Contains program parameters:
 * template = name of LaTeX template file
 * worksheet = name of data spreadsheet csv
@@ -211,35 +220,50 @@ Or in generic mode the mask of the subfolder name.
 * sol_stem = filename postfix for solutions pdf
 * paper_stem = filename postfix for questions pdf
 * root = name of root (usually solutions) directory
-* questdir = name of questons directory</dd>
+* questdir = name of questions directory</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>None.</p></section>
+<p>None.</p></div>
 </dd>
 <dt id="genassign.demask"><code class="name flex">
 <span>def <span class="ident">demask</span></span>(<span>values, mask)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Demasks a string masked with fields indicated by '#d' where d is a
-positve integer 1-9 using 1-based referencing of the entries in values.</p>
+<div class="desc"><p>Demasks a string masked with fields indicated by '#d' where d is a
+positive integer 1-9 using 1-based referencing of the entries in values.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>values</code></strong> :&ensp;<code>list</code></dt>
 <dd>Values to be placed into mask string identified by 1-based index.</dd>
 <dt><strong><code>mask</code></strong> :&ensp;<code>string</code></dt>
-<dd>Mask string including fields for subsitution indicated by #d.</dd>
+<dd>Mask string including fields for substitution indicated by #d.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><strong><code>mask</code></strong> :&ensp;<code>string</code></dt>
 <dd>Demasked string with substituted values for the fields.</dd>
-</dl></section>
+</dl></div>
+</dd>
+<dt id="genassign.encrypt_pdf"><code class="name flex">
+<span>def <span class="ident">encrypt_pdf</span></span>(<span>file, password)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function encrypts the PDF <code>file</code> using the provided password.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>file</code></strong> :&ensp;<code>string</code></dt>
+<dd>The file to be encrypted using AES 256.</dd>
+<dt><strong><code>password</code></strong> :&ensp;<code>string</code></dt>
+<dd>The owner password for the encryption (per PyMuPDF settings)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p></div>
 </dd>
 <dt id="genassign.gen_files"><code class="name flex">
 <span>def <span class="ident">gen_files</span></span>(<span>values, keys, template, tmpfile, params)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Drives the rendering and compilation process for each student, and
+<div class="desc"><p>Drives the rendering and compilation process for each student, and
 cleans up the files afterwards.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -247,17 +271,17 @@ cleans up the files afterwards.</p>
 <dd>Contains row of data: for student's: Moodle ID, Full Name, Student ID.</dd>
 <dt><strong><code>keys</code></strong> :&ensp;<code>tuple</code> of <code>string</code></dt>
 <dd>Contains the field names of the data (i.e. worksheet column names)</dd>
-<dt><strong><code>template</code></strong> :&ensp;<code>jinja2</code> <code>template</code></dt>
+<dt><strong><code>template</code></strong> :&ensp;<code>jinja2 template</code></dt>
 <dd>set to render the LaTeX file.</dd>
 <dt><strong><code>tmpfile</code></strong> :&ensp;<code>string</code></dt>
 <dd>Name of the temporary files.</dd>
-<dt><strong><code>params</code></strong> :&ensp;<code>data</code> <code>structure</code></dt>
+<dt><strong><code>params</code></strong> :&ensp;<code>data structure</code></dt>
 <dd>Contains program parameters:
 * template = name of LaTeX template file
 * worksheet = name of data spreadsheet csv
 * file_mask = title of test typically, or masked filename
 * folder_mask = folder name stem as appropriate to the type of
-Moodle assigment - usually 'file' or 'onlinetext'.
+Moodle assignment - usually 'file' or 'onlinetext'.
 Or in generic mode the mask of the subfolder name.
 * gen_paper = whether or not to generate the test paper only.
 * generic = whether or not in generic "mailmerge" mode
@@ -267,13 +291,13 @@ Or in generic mode the mask of the subfolder name.
 * questdir = name of questons directory</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>None.</p></section>
+<p>None.</p></div>
 </dd>
 <dt id="genassign.generic"><code class="name flex">
 <span>def <span class="ident">generic</span></span>(<span>csvfile)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Processes the csvfile to extract the dataframe and keys for use as a
+<div class="desc"><p>Processes the csvfile to extract the dataframe and keys for use as a
 generic mail merge application.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -288,27 +312,27 @@ generic mail merge application.</p>
 <dd>The keys for the data, i.e. the column names, which must be single
 words with no hyphens or underscores (must meet both python variable
 name rules and play nice with LaTeX)</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="genassign.main"><code class="name flex">
-<span>def <span class="ident">main</span></span>(<span>args)</span>
+<span>def <span class="ident">main</span></span>(<span>params)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>The main function, called when file is run as script, allowing the other
+<div class="desc"><p>The main function, called when file is run as script, allowing the other
 functions to be used from this script through a module interface</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>args</code></strong> :&ensp;<code>argparse</code> <code>arguments</code></dt>
+<dt><strong><code>params</code></strong> :&ensp;<code>SimpleNameSpace collection</code> of <code>the argparse arguments</code></dt>
 <dd>The command line arguments parsed using argparse</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>None.</p></section>
+<p>None.</p></div>
 </dd>
 <dt id="genassign.make_template"><code class="name flex">
 <span>def <span class="ident">make_template</span></span>(<span>texfile, tmpfile)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Creates the jinja2 template using a redefined template structure that
+<div class="desc"><p>Creates the jinja2 template using a redefined template structure that
 plays nicely with LaTeX
 <a href="https://web.archive.org/web/20121024021221/http://e6h.de/post/11/">https://web.archive.org/web/20121024021221/http://e6h.de/post/11/</a></p>
 <h2 id="parameters">Parameters</h2>
@@ -320,15 +344,15 @@ plays nicely with LaTeX
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>jinja2</code> <code>template</code></dt>
+<dt><code>jinja2 template</code></dt>
 <dd>jinja2 template used to render the documents.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="genassign.moodle"><code class="name flex">
 <span>def <span class="ident">moodle</span></span>(<span>csvfile)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Pre-processes usual inputs for the dataframe and more generic file
+<div class="desc"><p>Pre-processes usual inputs for the dataframe and more generic file
 and folder masks.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -341,13 +365,13 @@ and folder masks.</p>
 <dd>The pandas dataframe object.</dd>
 <dt><strong><code>keys</code></strong> :&ensp;<code>list</code> of <code>strings</code></dt>
 <dd>The keys for the Moodle data, i.e. adapted column names</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="genassign.move_pdf"><code class="name flex">
-<span>def <span class="ident">move_pdf</span></span>(<span>tmpfile, root, file, folder)</span>
+<span>def <span class="ident">move_pdf</span></span>(<span>tmpfile, root, file, folder, encrypt, password)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Moves the compiled PDF to the appropriate folder</p>
+<div class="desc"><p>Moves the compiled PDF to the appropriate folder</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>tmpfile</code></strong> :&ensp;<code>string</code></dt>
@@ -359,40 +383,44 @@ Usually one of 'solutions' or 'questions'</dd>
 <dd>The filename to be used (no extension)</dd>
 <dt><strong><code>folder</code></strong> :&ensp;<code>string</code></dt>
 <dd>The subfolder name to root folder where the file will be put</dd>
+<dt><strong><code>encrypt</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether or not to encrypt the PDF produced</dd>
+<dt><strong><code>password</code></strong> :&ensp;<code>string</code></dt>
+<dd>The password to be used as the owner password if the file is encrypted</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>None.</p></section>
+<p>None.</p></div>
 </dd>
 <dt id="genassign.remove_readonly"><code class="name flex">
 <span>def <span class="ident">remove_readonly</span></span>(<span>func, path, excinfo)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Attempts to remove a read-only file by changing the permissions</p></section>
+<div class="desc"><p>Attempts to remove a read-only file by changing the permissions</p></div>
 </dd>
 <dt id="genassign.render_file"><code class="name flex">
 <span>def <span class="ident">render_file</span></span>(<span>values, keys, template, tmpfile)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Renders the tex file for compilation for a specific set of values</p>
+<div class="desc"><p>Renders the tex file for compilation for a specific set of values</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>values</code></strong> :&ensp;<code>list</code> of <code>strings</code></dt>
 <dd>Contains the values to be placed against each template variable</dd>
 <dt><strong><code>keys</code></strong> :&ensp;<code>list</code> of <code>strings</code></dt>
 <dd>Contains template variable names to be replaced</dd>
-<dt><strong><code>template</code></strong> :&ensp;<code>jinja2</code> <code>template</code></dt>
+<dt><strong><code>template</code></strong> :&ensp;<code>jinja2 template</code></dt>
 <dd>sed to render the LaTeX file.</dd>
 <dt><strong><code>tmpfile</code></strong> :&ensp;<code>string</code></dt>
 <dd>Name of the temporary files.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>None.</p></section>
+<p>None.</p></div>
 </dd>
 <dt id="genassign.set_hidden"><code class="name flex">
 <span>def <span class="ident">set_hidden</span></span>(<span>texfile, hidden=True)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Toggles the solutions visbility in the student's LaTeX file</p>
+<div class="desc"><p>Toggles the solutions visbility in the student's LaTeX file</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>texfile</code></strong> :&ensp;<code>string</code></dt>
@@ -401,7 +429,7 @@ Usually one of 'solutions' or 'questions'</dd>
 <dd>Whether or not the solutions are to be hidden. The default is True.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>None.</p></section>
+<p>None.</p></div>
 </dd>
 </dl>
 </section>
@@ -413,9 +441,9 @@ Usually one of 'solutions' or 'questions'</dd>
 <div class="toc">
 <ul>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#useage">Useage</a><ul>
+<li><a href="#usage">Usage</a><ul>
 <li><a href="#assignments">Assignments</a></li>
-<li><a href="#generic-useage">Generic Useage</a></li>
+<li><a href="#generic-usage">Generic Usage</a></li>
 </ul>
 </li>
 <li><a href="#commands">Commands</a><ul>
@@ -437,6 +465,7 @@ Usually one of 'solutions' or 'questions'</dd>
 <ul class="two-column">
 <li><code><a title="genassign.compile_files" href="#genassign.compile_files">compile_files</a></code></li>
 <li><code><a title="genassign.demask" href="#genassign.demask">demask</a></code></li>
+<li><code><a title="genassign.encrypt_pdf" href="#genassign.encrypt_pdf">encrypt_pdf</a></code></li>
 <li><code><a title="genassign.gen_files" href="#genassign.gen_files">gen_files</a></code></li>
 <li><code><a title="genassign.generic" href="#genassign.generic">generic</a></code></li>
 <li><code><a title="genassign.main" href="#genassign.main">main</a></code></li>
@@ -452,9 +481,7 @@ Usually one of 'solutions' or 'questions'</dd>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad()</script>
 </body>
 </html>
