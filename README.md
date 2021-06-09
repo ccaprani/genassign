@@ -19,16 +19,16 @@ the output in subfolders of the template file directory.
 When the template file has randomization embedded, this is called
 automatically at each compilation, resulting in individualized assignments.
 Further, using a specific sequence of LaTeX commands, the question paper
-and associated solution file are generated separtely and placed into
+and associated solution file are generated separately and placed into
 separate subfolders of the template file directory.
 
-`genassign` is written to allow indpendent compilation of the template file
+`genassign` is written to allow independent compilation of the template file
 to facilitate development and checking of the questions and solutions,
 including close control of the randomization.
 
 It is not necessary for there to be PythonTex commands in the template.
 
-## Useage
+## Usage
 ### Assignments
 Prepare a template LaTeX-PytonTex file with complete questions and
 solutions. Add the jinja templating variables to the document as necessary to
@@ -36,16 +36,16 @@ identify individualization (e.g. student name, ID, etc).
 Include the LaTeX commands, and wrap the solutions as shown above.
 Use PythonTex to randomize the problem variables upon each compilation.
 
-*Standard example useage*:
+*Standard example usage*:
 ```python
-python genassign.py template.tex students.csv -t "Test 1 "
+python genassign.py -e template.tex students.csv -t "Test 1 "
 ```
 *To debug*:
 ```python
-!debugfile('genassign.py', args='"template.tex" "students.csv"')
+!debugfile('genassign.py', args='-e "template.tex" "students.csv"')
 ```
 
-### Generic Useage
+### Generic Usage
 `genassign` can perform generic mail-merge functionality for LaTeX
 documents. Use program option `-g` to enable generic mode. In this mode,
 only one set of files is output to the `-r` root directory using:
@@ -54,10 +54,10 @@ only one set of files is output to the `-r` root directory using:
 
 * `-f` folder mask
 
-The masks are based on the columns numnber in the worksheet, and
+The masks are based on the columns number in the worksheet, and
 constructed using `#d` as field variables for the column number, where
 d is 1-9. An example is `'File_#2_#3'` in which the data in columns 2 and
-3 (using 1-base numbering) is subsituted for the file or folder name.
+3 (using 1-base numbering) is substituted for the file or folder name.
 
 An important restriction in this mode is that the column names, which are
 the keys to be used in the LaTeX template, do not contain spaces, hyphens
@@ -75,8 +75,9 @@ python genassign.py letter.tex addresses.csv -g -t "#1_#2" -f . -r "letters"
     
 ## Commands
 ```
-genassign.py [-h] [-t FILE_MASK] [-f FOLDER_MASK] [-b] [-g]
-                [-s SOL_STEM] [-p PAPER_STEM] [-r ROOT] [-q QUESTDIR]
+genassign.py [-h] [-t FILE_MASK] [-f FOLDER_MASK] [-b] [-g] [-e]
+                [-s SOL_STEM] [-p PAPER_STEM] [-r ROOT] [-q QUESTDIR] 
+                [-w PASSWORD]
                 template worksheet
 ```
 
@@ -86,14 +87,17 @@ genassign.py [-h] [-t FILE_MASK] [-f FOLDER_MASK] [-b] [-g]
 show this help message and exit
 
 `-t`, `--file_mask` FILE_MASK
-Test title filename prefix, or if in generic mode -g then the filename mask
+Test title filename prefix, or if in generic mode `-g` then the filename mask
                         
 `-f`, `--folder_stem` FOLDER_MASK
 Folder stem, for Moodle assignment types usually `onlinetext` or `file`
-or if in generic mode -g then the subfolder name mask
+or if in generic mode `-g` then the subfolder name mask
 
 `-b`, `--gen_paper`
-Whether or not to hide solution and generate the paper
+If set, the paper without solutions will not be produced
+
+`-e`, `--encrypt`
+If set, the produced PDFs will be encrypted
 
 `-g`, `--generic`
 Operates in a generic mailmerge manner
@@ -110,6 +114,9 @@ Root directory name for main (solutions) output, e.g. `'solutions'`
 `-q`, `--questdir` QUESTDIR
 Directory name for questions output, e.g. `'questions'`
 
+`-w`,`--password` PASSWORD
+Password for encrypted PDFs, e.g. `'d0n0tC0py-21'`
+
 ### Required Named Arguments:
 
 `template`  LaTeX Template File with certain commands for jinja2
@@ -125,8 +132,11 @@ PythonTex. More specifically, `genassign` requires:
 1. A LaTeX (optionally using PythonTex) template with certain specific
 commands;
 
-2. A Moodle grading worksheet (or generic database) for the assigment as
+2. A Moodle grading worksheet (or generic database) for the assignment as
 input.
+
+The Pandas library is also required, which can be obtained via PyPI or
+Anaconda, depending on your python environment setup.
         
 ## Template
 There are two commands required at a minimum in the LaTeX file for Moodle
@@ -141,7 +151,7 @@ The command for *jinja2* templating
 ```
 
 which has no effect on the template other than to identify variables
-used for subsitution of student-specific information as defined in
+used for substitution of student-specific information as defined in
 Moodle worksheet:
     
 * Student's full name: `\VAR{FullName}`
@@ -154,7 +164,7 @@ in bold red:
     ```latex
     \newcommand*{\VAR}[1]{\textcolor{red}{\textbf{#1}}}
     ```
-This formatting does not appear in the rendereed documents. If this is
+This formatting does not appear in the rendered documents. If this is
 required, the `\VAR{Field}` should be wrapped in the desired formatting
 in the document body.
 
@@ -184,7 +194,7 @@ so that the solutions are wrapped in the document body as follows
 \end{hidden}
 ```
 Note that the LaTeX commands for hiding solutions are not required when
-operatin in generic mail-maerge mode.
+operating in generic mail-merge mode.
     
 ## Documentation
 To use `pdoc` to generate this documentation, issue this:
