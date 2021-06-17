@@ -40,7 +40,7 @@ Use PythonTex to randomize the problem variables upon each compilation.
 ```python
 python genassign.py -e template.tex students.csv -t "Test 1 "
 ```
-*To debug*:
+*To debug using an IPython prompt*:
 ```python
 !debugfile('genassign.py', args='-e "template.tex" "students.csv"')
 ```
@@ -56,7 +56,7 @@ only one set of files is output to the `-r` root directory using:
 
 The masks are based on the columns number in the worksheet, and
 constructed using `#d` as field variables for the column number, where
-d is 1-9. An example is `'File_#2_#3'` in which the data in columns 2 and
+`d` is 1-9. An example is `'File_#2_#3'` in which the data in columns 2 and
 3 (using 1-base numbering) is substituted for the file or folder name.
 
 An important restriction in this mode is that the column names, which are
@@ -68,7 +68,7 @@ Note that in the generic mode, it is not necessary for there to be the
 
 Example:
 This will put the mail merge letters in the current folder with file names
-id_name.pdf:
+`id_name.pdf`:
 ```python
 python genassign.py letter.tex addresses.csv -g -t "#1_#2" -f . -r "letters"
 ```
@@ -97,7 +97,7 @@ or if in generic mode `-g` then the subfolder name mask
 If set, the paper without solutions will not be produced
 
 `-e`, `--encrypt`
-If set, the produced PDFs will be encrypted
+If set, the produced PDFs will be encrypted with `--password`
 
 `-g`, `--generic`
 Operates in a generic mailmerge manner
@@ -115,7 +115,7 @@ Root directory name for main (solutions) output, e.g. `'solutions'`
 Directory name for questions output, e.g. `'questions'`
 
 `-w`,`--password` PASSWORD
-Password for encrypted PDFs, e.g. `'d0n0tC0py-21'`
+Password for encrypted PDFs, e.g. `'d0n0tC0py!'`
 
 ### Required Named Arguments:
 
@@ -138,7 +138,7 @@ input.
 The Pandas library is also required, which can be obtained via PyPI or
 Anaconda, depending on your python environment setup.
         
-## Template
+## Preparing the Template
 There are two commands required at a minimum in the LaTeX file for Moodle
 assignment output.
 
@@ -158,7 +158,7 @@ Moodle worksheet:
 
 * Student's ID: `\VAR{StudentID}`
 
-In case it is useful to have the fields to be replaced highlight ni the LaTeX
+In case it is useful to have the fields to be replaced highlight in the LaTeX
 template, the templating command can be altered, e.g. to highlight the fields
 in bold red:
     ```latex
@@ -171,7 +171,7 @@ in the document body.
 ### LaTeX Commands
 
 The LaTeX commands to wrap the solutions, so they can be toggled on and
-off must be placed in the document preamble. The following must appear:
+off, must be placed in the document preamble. The following must appear:
     
 ```
 \usepackage{comment}
