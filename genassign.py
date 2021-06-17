@@ -152,7 +152,7 @@ The command for *jinja2* templating
 which has no effect on the template other than to identify variables
 used for substitution of student-specific information as defined in
 Moodle worksheet:
-    
+
 * Student's full name: `\VAR{FullName}`
 
 * Student's ID: `\VAR{StudentID}`
@@ -171,10 +171,10 @@ in the document body.
 
 The LaTeX commands to wrap the solutions, so they can be toggled on and
 off must be placed in the document preamble. The following must appear:
-    
+
 ```
 \usepackage{comment}
-    
+
 \newif\ifhidden
 % This defines whether to show the hidden content or not.
 \hiddenfalse
@@ -207,18 +207,18 @@ import os
 import stat
 import shutil
 import subprocess
-import pandas as pd
 import tempfile
 import time
-import jinja2  # https://tug.org/tug2019/slides/slides-ziegenhagen-python.pdf
 import fileinput
 import argparse
 import re
 from types import SimpleNamespace
+import jinja2  # https://tug.org/tug2019/slides/slides-ziegenhagen-python.pdf
+import pandas as pd
 import pikepdf
 
 
-def make_template(texfile, tmpfile):
+def make_template(texfile):
     """
     Creates the jinja2 template using a redefined template structure that
     plays nicely with LaTeX
@@ -228,8 +228,6 @@ def make_template(texfile, tmpfile):
     ----------
     texfile : string
         The template LaTeX file containing jinja template variables.
-    tmpfile : string
-        The name of the temporary files that will be used.
 
     Returns
     -------
@@ -286,8 +284,11 @@ def render_file(values, keys, template, tmpfile):
         outfile.write(document)
 
 
-def remove_readonly(func, path, excinfo):
-    """Attempts to remove a read-only file by changing the permissions"""
+def remove_readonly(func, path, exc_info):
+    """
+    Attempts to remove a read-only file by changing the permissions.
+    Note, all arguments are necessary, even if unused.
+    """
     os.chmod(path, stat.S_IWRITE)
     func(path)
 
@@ -495,8 +496,8 @@ def demask(values, mask):
         Demasked string with substituted values for the fields.
 
     """
-    id = [int(s) for s in re.findall(r"\#(\d)", mask)]
-    for i in id:
+    idx = [int(s) for s in re.findall(r"\#(\d)", mask)]
+    for i in idx:
         mask = mask.replace("#" + str(i), str(values[i - 1]))
     return mask
 
@@ -666,7 +667,7 @@ def main(params):
     t = time.time()
 
     tmpfile = next(tempfile._get_candidate_names())
-    template = make_template(params.template, tmpfile)
+    template = make_template(params.template)
 
     # Clear output folders if they already exist
     if os.path.exists(params.root):
