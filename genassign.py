@@ -235,6 +235,10 @@ def make_template(texfile):
         jinja2 template used to render the documents.
 
     """
+    path_lst = os.path.split(texfile)
+    dir_path = path_lst[0]
+    template_file = path_lst[1]
+    
     latex_jinja_env = jinja2.Environment(
         block_start_string=r"\BLOCK{",  # instead of jinja's usual {%
         block_end_string=r"}",  # %}
@@ -246,12 +250,12 @@ def make_template(texfile):
         line_comment_prefix=r"%#",
         trim_blocks=True,
         autoescape=False,
-        loader=jinja2.FileSystemLoader(os.path.abspath("."))
+        loader=jinja2.FileSystemLoader(os.path.abspath(dir_path))
         # loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__)))
     )
 
     # Load the template from a file
-    return latex_jinja_env.get_template(texfile)
+    return latex_jinja_env.get_template(template_file)
 
 
 def render_file(values, keys, template, tmpfile):
@@ -800,10 +804,13 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    # Strip any leading autocomplete from passed in filenames
+    stripstr = r".\\"
+
     # Create a data structure of the args to pass around
     params = SimpleNamespace(
-        template=args.template,
-        worksheet=args.worksheet,
+        template=args.template.lstrip(stripstr),
+        worksheet=args.worksheet.lstrip(stripstr),
         file_mask=args.file_mask,
         folder_mask=args.folder_mask,
         gen_paper=args.gen_paper,
